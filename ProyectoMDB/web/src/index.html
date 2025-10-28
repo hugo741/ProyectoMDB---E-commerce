@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>API REST - Usuarios</title>
+</head>
+<body>
+  <h1>Usuarios</h1>
+
+  <form id="addForm">
+    <input name="nombre" placeholder="Nombre" required>
+    <input name="contraseña" placeholder="Contraseña" required>
+    <input name="correo" type="email" placeholder="Correo" required>
+    <input name="telefono" placeholder="Telefono" required>
+    <input name="rol" placeholder="Rol" required>
+    <button type="submit">Agregar</button>
+  </form>
+
+  <hr>
+
+  <table border="1" id="tbl">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Contraseña</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Rol</th>
+        <th>Eliminar</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+<script>
+const apiBase = './api.php/api/users';
+
+async function listar() {
+  const res = await fetch(apiBase);
+  const data = await res.json();
+  const tbody = document.querySelector('#tbl tbody');
+  tbody.innerHTML = '';
+  data.forEach(u => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${u.nombre || ''}</td>
+      <td>${u.contraseña || ''}</td>
+      <td>${u.correo || ''}</td>
+      <td>${u.telefono || ''}</td>
+      <td>${u.rol || ''}</td>
+      <td><button data-id="${u._id?.['$oid'] || u._id}">Eliminar</button></td>`;
+    tbody.appendChild(tr);
+  });
+  // Botones de eliminar
+  document.querySelectorAll('button[data-id]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const id = e.currentTarget.dataset.id;
+      await fetch(apiBase + '?id=' + id, { method: 'DELETE' });
+      listar();
+    });
+  });
+}
+
+document.getElementById('addForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const usuario = {
+    nombre: form.nombre.value.trim(),
+    contraseña: form.contraseña.value.trim(),
+    correo: form.correo.value.trim(),
+    telefono: form.telefono.value.trim(),
+    rol: form.rol.value.trim()
+  };
+  await fetch(apiBase, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(usuario)
+  });
+  form.reset();
+  listar();
+});
+
+listar();
+</script>
+</body>
+</html>

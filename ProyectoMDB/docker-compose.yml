@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - appnet  
+
+  web:
+    build: .
+    container_name: happyhamilton
+    ports:
+      - "8080:80"
+    depends_on:
+      - mongo
+    networks:
+      - appnet    
+
+volumes:
+  mongo_data:
+
+networks:
+  appnet:
