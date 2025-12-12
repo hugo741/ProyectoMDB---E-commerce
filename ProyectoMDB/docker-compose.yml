@@ -20,7 +20,17 @@ services:
     depends_on:
       - mongo
     networks:
-      - appnet    
+      - appnet   
+
+  grpc:
+    build: ./grpc
+    container_name: grpc-usuarios
+    depends_on:
+      - mongo
+    ports:
+      - "50051:50051"
+    networks:
+      - appnet
 
 volumes:
   mongo_data:
