@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package proyecto;
+
+service UsuarioService {
+  rpc CrearUsuario (UsuarioCrearRequest) returns (UsuarioResponse);
+  rpc ObtenerUsuario (UsuarioObtenerRequest) returns (UsuarioResponse);
+  rpc EliminarUsuario (UsuarioEliminarRequest) returns (UsuarioEliminarResponse);
+  rpc ListarUsuarios (UsuarioListarRequest) returns (UsuarioListarResponse);
+  rpc EditarUsuario (EditarUsuarioRequest) returns (EditarUsuarioResponse);
+}
+
+message Usuario {
+  string id = 1;
+  string nombre = 2;
+  string contrasena = 3;
+  string correo = 4;
+  string telefono = 5;
+  string rol = 6;
+}
+
+message UsuarioCrearRequest {
+  Usuario usuario = 1;
+}
+
+message UsuarioObtenerRequest {
+  string id = 1;
+}
+
+message UsuarioEliminarRequest {
+  string id = 1;
+}
+
+message UsuarioListarRequest {}
+
+message UsuarioResponse {
+  Usuario usuario = 1;
+  string error = 2;
+}
+
+message UsuarioListarResponse {
+  repeated Usuario usuarios = 1;
+  string error = 2;
+}
+
+message UsuarioEliminarResponse {
+  bool success = 1;
+  string error = 2;
+}
+
+message EditarUsuarioRequest {
+  string id = 1;          
+  Usuario usuario = 2;    
+}
+
+message EditarUsuarioResponse {
+  Usuario usuario = 1;    
+  string error = 2;
+}
